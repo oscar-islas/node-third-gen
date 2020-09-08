@@ -17,6 +17,10 @@ app.get('/', (req, res) => {
     res.sendFile(path.join(__dirname, 'public', 'login.html'));
 });
 
+app.get('/login', (req, res) => {
+    res.sendFile(path.join(__dirname, 'public', 'login.html'));
+});
+
 app.get('/nosotros', (req, res) => {
     fs.readFile('contador.txt', (error, datos) => {
         let visitas = datos.toString();
@@ -47,6 +51,25 @@ app.post('/register', (req, res) => {
         });
     });
 });
+
+app.post('/login', (req, res) => {
+    const {email, password} = req.body;
+
+    fs.readFile('db.json', (error, data) => {
+        let users = JSON.parse(data.toString());
+        let userObj = users.find(user => {
+            return user.email === email;
+        });
+        if(userObj && userObj.password === password){
+            console.log('la contraseña es correcta');
+            res.sendfile(__dirname + "/public/index.html");
+        }else{
+            console.log('la contraseña es incorrecta');
+            res.sendfile(__dirname + "/public/login.html");
+        }
+    })
+});
+
 
 app.get('/registro', (req, res) => {
     res.sendFile(path.join(__dirname, 'public', 'register.html'));
